@@ -10,10 +10,17 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# OpenRouteService API Key (optional, falls back to OSRM if not provided or quota exceeded)
+ORS_API_KEY = os.environ.get(
+    "ORS_API_KEY",
+    "eyJvcmciOiI1YjNjZTM1OTc4NTExMTAwMDFjZjYyNDgiLCJpZCI6IjFkNDc3NTQ5NzZjYTQxN2VhY2FkNTU2YjM0MDEwNTcyIiwiaCI6Im11cm11cjY0In0="
+)
 
 
 # Quick-start development settings - unsuitable for production
