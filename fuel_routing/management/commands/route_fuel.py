@@ -101,3 +101,4 @@ class Command(BaseCommand):
             self.stdout.write(fmt.format(f"#{s['stop_index']}", name, loc, price_str, pumped_str, cost_str))
 
         self.stdout.write("-" * 90 + "\n")
+
