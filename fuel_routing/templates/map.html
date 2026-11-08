@@ -26,6 +26,7 @@
       --radius-card: 18px;
       --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
       --shadow-float: 0 16px 32px -6px rgba(0, 0, 0, 0.12), 0 6px 14px -3px rgba(0, 0, 0, 0.05);
+      --shadow-dropdown: 0 12px 28px -4px rgba(0, 0, 0, 0.15), 0 4px 10px -2px rgba(0, 0, 0, 0.05);
     }
 
     * {
@@ -68,23 +69,60 @@
       margin-top: 4px;
     }
 
+    .header-right-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Unit Switcher Pill Toggle */
+    .unit-switcher-pill {
+      background: #ffffff;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 24px;
+      padding: 3px;
+      display: flex;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
+    }
+
+    .unit-btn {
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .unit-btn.active {
+      background: var(--brand-dark);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.2);
+    }
+
     .api-badge-btn {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: var(--brand-dark);
-      color: #ffffff;
+      background: #ffffff;
+      color: var(--brand-dark);
+      border: 1.5px solid var(--border-subtle);
       text-decoration: none;
       font-size: 0.8rem;
       font-weight: 700;
-      padding: 8px 16px;
-      border-radius: 20px;
-      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.18);
+      padding: 7px 16px;
+      border-radius: 24px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.04);
       transition: all 0.2s;
     }
 
     .api-badge-btn:hover {
-      background: #1e293b;
+      background: #f8fafc;
+      border-color: #cbd5e1;
     }
 
     /* Clean Route Input Control Bar */
@@ -93,50 +131,86 @@
       border: 1px solid var(--border-subtle);
       border-radius: 16px;
       box-shadow: var(--shadow-card);
-      padding: 12px 18px;
+      padding: 14px 18px;
       margin-bottom: 18px;
       display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
       gap: 12px;
+      position: relative;
+      z-index: 100;
     }
 
-    .route-inputs-group {
+    .route-inputs-row {
       display: flex;
       align-items: center;
       gap: 10px;
-      flex: 1;
-      min-width: 480px;
+      width: 100%;
     }
 
-    .input-box {
-      flex: 1;
+    /* Region Selector Dropdown */
+    .region-select-box {
       display: flex;
       align-items: center;
       background: #f8fafc;
       border: 1.5px solid var(--border-subtle);
       border-radius: 10px;
-      padding: 8px 14px;
+      padding: 9px 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .region-select-box select {
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #0f172a;
+      cursor: pointer;
+      margin-left: 4px;
+    }
+
+    /* Autocomplete Input Container */
+    .autocomplete-container {
+      flex: 1;
+      position: relative;
+    }
+
+    .input-field-wrapper {
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 7px 12px;
       transition: all 0.2s;
     }
 
-    .input-box:focus-within {
+    .input-field-wrapper:focus-within {
       background: #ffffff;
       border-color: var(--brand-blue);
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
     }
 
-    .input-box-label {
-      font-size: 0.72rem;
+    .input-pin-badge {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
       font-weight: 800;
-      text-transform: uppercase;
+      color: #ffffff;
       margin-right: 8px;
-      letter-spacing: 0.4px;
+      flex-shrink: 0;
     }
 
-    .label-start { color: var(--brand-green); }
-    .label-finish { color: #dc2626; }
+    .pin-start { background: var(--brand-green); }
+    .pin-finish { background: #dc2626; }
 
     .route-text-input {
       width: 100%;
@@ -148,11 +222,41 @@
       color: var(--text-main);
     }
 
-    .route-arrow {
+    .input-clear-btn {
       color: #94a3b8;
-      font-size: 1rem;
-      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.78rem;
+      padding: 2px 4px;
+      border: none;
+      background: transparent;
+      display: none;
+    }
+
+    .input-clear-btn:hover {
+      color: #0f172a;
+    }
+
+    /* Swap button between Start and Finish */
+    .btn-swap-locations {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      border: 1.5px solid var(--border-subtle);
+      color: #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
       flex-shrink: 0;
+    }
+
+    .btn-swap-locations:hover {
+      background: var(--brand-dark);
+      color: #ffffff;
+      border-color: var(--brand-dark);
+      transform: rotate(180deg);
     }
 
     .btn-optimize {
@@ -160,8 +264,8 @@
       color: #ffffff;
       border: none;
       border-radius: 10px;
-      padding: 10px 22px;
-      font-size: 0.86rem;
+      padding: 10px 24px;
+      font-size: 0.88rem;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
@@ -169,6 +273,7 @@
       gap: 8px;
       transition: all 0.2s;
       flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.2);
     }
 
     .btn-optimize:hover {
@@ -180,12 +285,105 @@
       cursor: not-allowed;
     }
 
-    /* Quick Preset Chips */
+    /* Autocomplete Suggestions Dropdown */
+    .autocomplete-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: var(--shadow-dropdown);
+      border: 1px solid var(--border-subtle);
+      max-height: 280px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+    }
+
+    .dropdown-header {
+      padding: 8px 12px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      background: #f8fafc;
+      border-bottom: 1px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .dropdown-item {
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      border-bottom: 1px solid #f8fafc;
+      transition: background 0.15s;
+    }
+
+    .dropdown-item:last-child {
+      border-bottom: none;
+    }
+
+    .dropdown-item:hover, .dropdown-item.active {
+      background: #f1f5f9;
+    }
+
+    .item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .item-icon-box {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      background: #e2e8f0;
+      color: #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+    }
+
+    .item-city-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--brand-dark);
+    }
+
+    .item-state-name {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+    }
+
+    .item-country-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    /* Presets Row */
     .presets-row {
       display: flex;
       align-items: center;
       gap: 6px;
       flex-wrap: wrap;
+    }
+
+    .preset-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-right: 2px;
     }
 
     .preset-chip-btn {
@@ -216,6 +414,7 @@
       box-shadow: var(--shadow-card);
       border: 1px solid rgba(0, 0, 0, 0.05);
       margin-bottom: 20px;
+      z-index: 10;
     }
 
     #map {
@@ -634,7 +833,13 @@
       <p>National highway refueling optimization under 500-mile vehicle range & 10 MPG fuel economy.</p>
     </div>
 
-    <div>
+    <div class="header-right-actions">
+      <!-- Unit Flexibility Switcher -->
+      <div class="unit-switcher-pill" title="Toggle Distance & Volume Units">
+        <button id="unit-imperial-btn" class="unit-btn active" onclick="setUnitSystem('imperial')">Miles • Gallons</button>
+        <button id="unit-metric-btn" class="unit-btn" onclick="setUnitSystem('metric')">KM • Liters</button>
+      </div>
+
       <a id="btn-export-api" href="/api/route/?start=New+York%2C+NY&finish=Atlanta%2C+GA" target="_blank" class="api-badge-btn">
         <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
@@ -644,21 +849,52 @@
     </div>
   </header>
 
-  <!-- Clean Route Input Control Bar -->
+  <!-- Clean Route Input Control Bar with Autocomplete & Region Filter -->
   <section class="route-control-bar">
-    <div class="route-inputs-group">
-      <div class="input-box">
-        <span class="input-box-label label-start">Start</span>
-        <input type="text" id="start-input" class="route-text-input" value="{{ start|default:'New York, NY' }}" placeholder="e.g. New York, NY" />
+    <div class="route-inputs-row">
+
+      <!-- Region Filter Dropdown -->
+      <div class="region-select-box" title="Filter cities by Country or Continent">
+        <span>🌍</span>
+        <select id="region-selector" onchange="onRegionChange()">
+          <option value="US" selected>United States (All 50 States)</option>
+          <option value="ALL">Global (All Continents)</option>
+          <option value="CA">Canada (CA)</option>
+          <option value="GB">United Kingdom (GB)</option>
+          <option value="DE">Germany (DE)</option>
+          <option value="IN">India (IN)</option>
+          <option value="AU">Australia (AU)</option>
+        </select>
       </div>
 
-      <span class="route-arrow">➔</span>
-
-      <div class="input-box">
-        <span class="input-box-label label-finish">Finish</span>
-        <input type="text" id="finish-input" class="route-text-input" value="{{ finish|default:'Atlanta, GA' }}" placeholder="e.g. Atlanta, GA" />
+      <!-- Start City Autocomplete -->
+      <div class="autocomplete-container" id="start-autocomplete-container">
+        <div class="input-field-wrapper">
+          <span class="input-pin-badge pin-start">A</span>
+          <input type="text" id="start-input" class="route-text-input" value="{{ start|default:'New York, NY' }}" placeholder="Search start city, state or transport hub..." autocomplete="off" />
+          <button type="button" id="start-clear-btn" class="input-clear-btn" onclick="clearInput('start-input')">✕</button>
+        </div>
+        <div id="start-dropdown" class="autocomplete-dropdown"></div>
       </div>
 
+      <!-- Swap Locations Button -->
+      <button type="button" class="btn-swap-locations" onclick="swapLocations()" title="Swap Start & Finish Locations">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4" />
+        </svg>
+      </button>
+
+      <!-- Finish City Autocomplete -->
+      <div class="autocomplete-container" id="finish-autocomplete-container">
+        <div class="input-field-wrapper">
+          <span class="input-pin-badge pin-finish">B</span>
+          <input type="text" id="finish-input" class="route-text-input" value="{{ finish|default:'Atlanta, GA' }}" placeholder="Search destination city, state or transport hub..." autocomplete="off" />
+          <button type="button" id="finish-clear-btn" class="input-clear-btn" onclick="clearInput('finish-input')">✕</button>
+        </div>
+        <div id="finish-dropdown" class="autocomplete-dropdown"></div>
+      </div>
+
+      <!-- Action Button -->
       <button id="btn-optimize" class="btn-optimize" onclick="fetchRoute()">
         <span id="btn-opt-text">Optimize Route</span>
         <span id="btn-opt-spinner" class="spinner-icon" style="display:none;"></span>
@@ -667,7 +903,8 @@
 
     <!-- Quick Presets -->
     <div class="presets-row">
-      <button type="button" class="preset-chip-btn" onclick="setPreset('New York, NY', 'Los Angeles, CA')">NYC → LA</button>
+      <span class="preset-label">Quick Routes:</span>
+      <button type="button" class="preset-chip-btn" onclick="setPreset('New York, NY', 'Los Angeles, CA')">NYC → LA (Coast-to-Coast)</button>
       <button type="button" class="preset-chip-btn" onclick="setPreset('New York, NY', 'Atlanta, GA')">NYC → Atlanta</button>
       <button type="button" class="preset-chip-btn" onclick="setPreset('Chicago, IL', 'Dallas, TX')">Chicago → Dallas</button>
       <button type="button" class="preset-chip-btn" onclick="setPreset('Seattle, WA', 'Miami, FL')">Seattle → Miami</button>
@@ -692,7 +929,7 @@
         </div>
         <div class="station-price-box">
           <div id="detail-price-text" class="station-price-num">$2.899</div>
-          <div class="station-price-lbl">per gallon</div>
+          <div id="detail-price-unit" class="station-price-lbl">per gallon</div>
         </div>
       </div>
 
@@ -708,7 +945,7 @@
         <div class="badge-stat-item">
           <span class="badge-stat-dot" style="background:var(--brand-blue);"></span>
           <div>
-            <span class="badge-stat-lbl">Gallons Pumped</span>
+            <span class="badge-stat-lbl">Fuel Pumped</span>
             <span id="detail-pumped-text" class="badge-stat-val">+33.1 gal</span>
           </div>
         </div>
@@ -744,7 +981,7 @@
     <div class="analytics-card">
       <div class="analytics-card-title">
         <span>Fuel Expense & Consumption</span>
-        <span style="font-size:0.75rem; color:#64748b; font-weight:600;">10 MPG • 500 mi Range</span>
+        <span id="card1-spec-badge" style="font-size:0.75rem; color:#64748b; font-weight:600;">10 MPG • 500 mi Range</span>
       </div>
 
       <div class="hero-expense-box">
@@ -755,15 +992,15 @@
       <div class="metric-chips-row">
         <div class="metric-chip">
           <span class="chip-dot" style="background:var(--brand-amber);"></span>
-          <span>Consumed: <strong id="stat-consumed-gal">86.5 gal</strong></span>
+          <span>Consumed: <strong id="stat-consumed-vol">86.5 gal</strong></span>
         </div>
         <div class="metric-chip">
           <span class="chip-dot" style="background:var(--brand-blue);"></span>
-          <span>Purchased: <strong id="stat-purchased-gal">36.5 gal</strong></span>
+          <span>Purchased: <strong id="stat-purchased-vol">36.5 gal</strong></span>
         </div>
         <div class="metric-chip">
           <span class="chip-dot" style="background:var(--brand-green);"></span>
-          <span>Avg Price: <strong id="stat-avg-price">$2.863/gal</strong></span>
+          <span>Avg Rate: <strong id="stat-avg-price">$2.863/gal</strong></span>
         </div>
       </div>
 
@@ -792,7 +1029,7 @@
             <tr>
               <th>Station / Location</th>
               <th>Status</th>
-              <th style="text-align:right;">Price & Gal</th>
+              <th id="table-head-price" style="text-align:right;">Price & Volume</th>
             </tr>
           </thead>
           <tbody id="stops-tbody">
@@ -806,7 +1043,7 @@
     <div class="analytics-card">
       <div class="analytics-card-title">
         <span>Route Telemetry & Savings</span>
-        <span style="font-size:0.75rem; color:#64748b; font-weight:600;">USA Corridor</span>
+        <span id="card3-unit-badge" style="font-size:0.75rem; color:#64748b; font-weight:600;">US Standard</span>
       </div>
 
       <div class="telemetry-item">
@@ -847,6 +1084,78 @@
     let map = null;
     let routeLayer = null;
     let markersLayer = null;
+    let currentData = null;
+
+    // Unit System State: 'imperial' (miles, gallons) or 'metric' (km, liters)
+    let currentUnitSystem = 'imperial';
+    const KM_PER_MILE = 1.60934;
+    const LITERS_PER_GALLON = 3.78541;
+
+    // Curated Hubs for all 50 US states & world regions (matching spotterfullsatck)
+    const REGIONAL_HUBS = {
+      US: [
+        { city: "New York", state: "NY", country: "United States", country_code: "US", label: "New York, NY, USA", lat: 40.7128, lon: -74.0060 },
+        { city: "Los Angeles", state: "CA", country: "United States", country_code: "US", label: "Los Angeles, CA, USA", lat: 34.0522, lon: -118.2437 },
+        { city: "Chicago", state: "IL", country: "United States", country_code: "US", label: "Chicago, IL, USA", lat: 41.8781, lon: -87.6298 },
+        { city: "Dallas", state: "TX", country: "United States", country_code: "US", label: "Dallas, TX, USA", lat: 32.7767, lon: -96.7970 },
+        { city: "Houston", state: "TX", country: "United States", country_code: "US", label: "Houston, TX, USA", lat: 29.7604, lon: -95.3698 },
+        { city: "Atlanta", state: "GA", country: "United States", country_code: "US", label: "Atlanta, GA, USA", lat: 33.7490, lon: -84.3880 },
+        { city: "Miami", state: "FL", country: "United States", country_code: "US", label: "Miami, FL, USA", lat: 25.7617, lon: -80.1918 },
+        { city: "Denver", state: "CO", country: "United States", country_code: "US", label: "Denver, CO, USA", lat: 39.7392, lon: -104.9903 },
+        { city: "Seattle", state: "WA", country: "United States", country_code: "US", label: "Seattle, WA, USA", lat: 47.6062, lon: -122.3321 },
+        { city: "Phoenix", state: "AZ", country: "United States", country_code: "US", label: "Phoenix, AZ, USA", lat: 33.4484, lon: -112.0740 },
+        { city: "Philadelphia", state: "PA", country: "United States", country_code: "US", label: "Philadelphia, PA, USA", lat: 39.9526, lon: -75.1652 },
+        { city: "San Francisco", state: "CA", country: "United States", country_code: "US", label: "San Francisco, CA, USA", lat: 37.7749, lon: -122.4194 },
+        { city: "Detroit", state: "MI", country: "United States", country_code: "US", label: "Detroit, MI, USA", lat: 42.3314, lon: -83.0458 },
+        { city: "Minneapolis", state: "MN", country: "United States", country_code: "US", label: "Minneapolis, MN, USA", lat: 44.9778, lon: -93.2650 },
+        { city: "St. Louis", state: "MO", country: "United States", country_code: "US", label: "St. Louis, MO, USA", lat: 38.6270, lon: -90.1994 },
+        { city: "Nashville", state: "TN", country: "United States", country_code: "US", label: "Nashville, TN, USA", lat: 36.1627, lon: -86.7816 },
+        { city: "Indianapolis", state: "IN", country: "United States", country_code: "US", label: "Indianapolis, IN, USA", lat: 39.7684, lon: -86.1581 },
+        { city: "Kansas City", state: "MO", country: "United States", country_code: "US", label: "Kansas City, MO, USA", lat: 39.0997, lon: -94.5786 },
+        { city: "Columbus", state: "OH", country: "United States", country_code: "US", label: "Columbus, OH, USA", lat: 39.9612, lon: -82.9988 },
+        { city: "Charlotte", state: "NC", country: "United States", country_code: "US", label: "Charlotte, NC, USA", lat: 35.2271, lon: -80.8431 },
+        { city: "Las Vegas", state: "NV", country: "United States", country_code: "US", label: "Las Vegas, NV, USA", lat: 36.1699, lon: -115.1398 },
+        { city: "Salt Lake City", state: "UT", country: "United States", country_code: "US", label: "Salt Lake City, UT, USA", lat: 40.7608, lon: -111.8910 },
+        { city: "Austin", state: "TX", country: "United States", country_code: "US", label: "Austin, TX, USA", lat: 30.2672, lon: -97.7431 },
+        { city: "San Antonio", state: "TX", country: "United States", country_code: "US", label: "San Antonio, TX, USA", lat: 29.4241, lon: -98.4936 },
+        { city: "New Orleans", state: "LA", country: "United States", country_code: "US", label: "New Orleans, LA, USA", lat: 29.9511, lon: -90.0715 },
+        { city: "Memphis", state: "TN", country: "United States", country_code: "US", label: "Memphis, TN, USA", lat: 35.1495, lon: -90.0490 },
+        { city: "Boston", state: "MA", country: "United States", country_code: "US", label: "Boston, MA, USA", lat: 42.3601, lon: -71.0589 },
+        { city: "Baltimore", state: "MD", country: "United States", country_code: "US", label: "Baltimore, MD, USA", lat: 39.2904, lon: -76.6122 },
+        { city: "Milwaukee", state: "WI", country: "United States", country_code: "US", label: "Milwaukee, WI, USA", lat: 43.0389, lon: -87.9065 },
+        { city: "Oklahoma City", state: "OK", country: "United States", country_code: "US", label: "Oklahoma City, OK, USA", lat: 35.4676, lon: -97.5164 },
+        { city: "Portland", state: "OR", country: "United States", country_code: "US", label: "Portland, OR, USA", lat: 45.5152, lon: -122.6784 },
+        { city: "Pittsburgh", state: "PA", country: "United States", country_code: "US", label: "Pittsburgh, PA, USA", lat: 40.4406, lon: -79.9959 },
+        { city: "Washington", state: "DC", country: "United States", country_code: "US", label: "Washington, DC, USA", lat: 38.9072, lon: -77.0369 },
+      ],
+      CA: [
+        { city: "Toronto", state: "ON", country: "Canada", country_code: "CA", label: "Toronto, ON, Canada", lat: 43.6532, lon: -79.3832 },
+        { city: "Vancouver", state: "BC", country: "Canada", country_code: "CA", label: "Vancouver, BC, Canada", lat: 49.2827, lon: -123.1207 },
+        { city: "Montreal", state: "QC", country: "Canada", country_code: "CA", label: "Montreal, QC, Canada", lat: 45.5017, lon: -73.5673 },
+        { city: "Calgary", state: "AB", country: "Canada", country_code: "CA", label: "Calgary, AB, Canada", lat: 51.0447, lon: -114.0719 },
+      ],
+      GB: [
+        { city: "London", state: "England", country: "United Kingdom", country_code: "GB", label: "London, UK", lat: 51.5074, lon: -0.1278 },
+        { city: "Birmingham", state: "England", country: "United Kingdom", country_code: "GB", label: "Birmingham, UK", lat: 52.4862, lon: -1.8904 },
+        { city: "Manchester", state: "England", country: "United Kingdom", country_code: "GB", label: "Manchester, UK", lat: 53.4808, lon: -2.2426 },
+      ],
+      DE: [
+        { city: "Frankfurt", state: "Hessen", country: "Germany", country_code: "DE", label: "Frankfurt, Germany", lat: 50.1109, lon: 8.6821 },
+        { city: "Berlin", state: "Berlin", country: "Germany", country_code: "DE", label: "Berlin, Germany", lat: 52.5200, lon: 13.4050 },
+        { city: "Munich", state: "Bavaria", country: "Germany", country_code: "DE", lat: 48.1351, lon: 11.5820 },
+      ],
+      IN: [
+        { city: "Delhi", state: "Delhi", country: "India", country_code: "IN", label: "Delhi, India", lat: 28.6139, lon: 77.2090 },
+        { city: "Mumbai", state: "Maharashtra", country: "India", country_code: "IN", label: "Mumbai, India", lat: 19.0760, lon: 72.8777 },
+        { city: "Bengaluru", state: "Karnataka", country: "India", country_code: "IN", label: "Bengaluru, India", lat: 12.9716, lon: 77.5946 },
+        { city: "Hyderabad", state: "Telangana", country: "India", country_code: "IN", label: "Hyderabad, India", lat: 17.3850, lon: 78.4867 },
+      ],
+      AU: [
+        { city: "Sydney", state: "NSW", country: "Australia", country_code: "AU", label: "Sydney, NSW, Australia", lat: -33.8688, lon: 151.2093 },
+        { city: "Melbourne", state: "VIC", country: "Australia", country_code: "AU", label: "Melbourne, VIC, Australia", lat: -37.8136, lon: 144.9631 },
+        { city: "Brisbane", state: "QLD", country: "Australia", country_code: "AU", label: "Brisbane, QLD, Australia", lat: -27.4698, lon: 153.0251 },
+      ]
+    };
 
     function initMap() {
       // Focus on USA
@@ -865,16 +1174,213 @@
       markersLayer = L.layerGroup().addTo(map);
     }
 
+    // Toggle Unit System: 'imperial' (mi, gal) or 'metric' (km, L)
+    function setUnitSystem(unit) {
+      if (unit === currentUnitSystem) return;
+      currentUnitSystem = unit;
+
+      const impBtn = document.getElementById('unit-imperial-btn');
+      const metBtn = document.getElementById('unit-metric-btn');
+
+      if (unit === 'imperial') {
+        impBtn.classList.add('active');
+        metBtn.classList.remove('active');
+        document.getElementById('card1-spec-badge').textContent = '10 MPG • 500 mi Range';
+        document.getElementById('card3-unit-badge').textContent = 'US Standard';
+        document.getElementById('table-head-price').textContent = 'Price & Volume';
+      } else {
+        metBtn.classList.add('active');
+        impBtn.classList.remove('active');
+        document.getElementById('card1-spec-badge').textContent = '4.25 km/L • 805 km Range';
+        document.getElementById('card3-unit-badge').textContent = 'Metric System';
+        document.getElementById('table-head-price').textContent = 'Price ($/L) & Vol (L)';
+      }
+
+      if (currentData) {
+        renderDashboard(currentData);
+        if (currentData.fuel_stops && currentData.fuel_stops.length > 0) {
+          selectStop(currentData.fuel_stops[0]);
+        }
+      }
+    }
+
     function setPreset(start, finish) {
       document.getElementById('start-input').value = start;
       document.getElementById('finish-input').value = finish;
+      updateClearBtn('start-input', 'start-clear-btn');
+      updateClearBtn('finish-input', 'finish-clear-btn');
+      closeAllDropdowns();
       fetchRoute();
+    }
+
+    function swapLocations() {
+      const s = document.getElementById('start-input');
+      const f = document.getElementById('finish-input');
+      const temp = s.value;
+      s.value = f.value;
+      f.value = temp;
+      updateClearBtn('start-input', 'start-clear-btn');
+      updateClearBtn('finish-input', 'finish-clear-btn');
+      closeAllDropdowns();
+      fetchRoute();
+    }
+
+    function clearInput(inputId) {
+      const inp = document.getElementById(inputId);
+      inp.value = '';
+      inp.focus();
+      if (inputId === 'start-input') {
+        updateClearBtn('start-input', 'start-clear-btn');
+        showDropdown('start-input', 'start-dropdown');
+      } else {
+        updateClearBtn('finish-input', 'finish-clear-btn');
+        showDropdown('finish-input', 'finish-dropdown');
+      }
+    }
+
+    function updateClearBtn(inputId, btnId) {
+      const val = document.getElementById(inputId).value.trim();
+      const btn = document.getElementById(btnId);
+      btn.style.display = val ? 'inline-block' : 'none';
+    }
+
+    function onRegionChange() {
+      closeAllDropdowns();
     }
 
     function toggleDetailCard() {
       const card = document.getElementById('station-detail-card');
       card.style.display = card.style.display === 'none' ? 'block' : 'none';
     }
+
+    function closeAllDropdowns() {
+      document.getElementById('start-dropdown').style.display = 'none';
+      document.getElementById('finish-dropdown').style.display = 'none';
+    }
+
+    // Autocomplete Logic (Curated Hubs + Fast Local 40,000+ US/World Search)
+    function setupAutocomplete(inputId, dropdownId, clearBtnId) {
+      const input = document.getElementById(inputId);
+      const dropdown = document.getElementById(dropdownId);
+      let debounceTimer = null;
+
+      input.addEventListener('input', () => {
+        updateClearBtn(inputId, clearBtnId);
+        const query = input.value.trim();
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          showDropdown(inputId, dropdownId);
+        }, 120);
+      });
+
+      input.addEventListener('focus', () => {
+        showDropdown(inputId, dropdownId);
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          dropdown.style.display = 'none';
+        } else if (e.key === 'Enter') {
+          dropdown.style.display = 'none';
+          fetchRoute();
+        }
+      });
+    }
+
+    async function showDropdown(inputId, dropdownId) {
+      const input = document.getElementById(inputId);
+      const dropdown = document.getElementById(dropdownId);
+      const query = input.value.trim().toLowerCase();
+      const region = document.getElementById('region-selector').value;
+
+      let suggestions = [];
+
+      // Curated Hubs for region
+      let hubs = [];
+      if (region === 'ALL') {
+        hubs = Object.values(REGIONAL_HUBS).flat();
+      } else {
+        hubs = REGIONAL_HUBS[region] || REGIONAL_HUBS['US'];
+      }
+
+      if (!query) {
+        suggestions = hubs.slice(0, 10);
+      } else {
+        // Filter hubs
+        const localMatches = hubs.filter(h => {
+          const hay = `${h.city} ${h.state || ''} ${h.country || ''}`.toLowerCase();
+          return hay.includes(query);
+        });
+
+        // Search API for additional places (40,000+ US cities & world)
+        try {
+          const resp = await fetch(`/api/locations/search/?q=${encodeURIComponent(query)}&country=${region}`);
+          if (resp.ok) {
+            const apiResults = await resp.json();
+            const seen = new Set(localMatches.map(m => `${m.city}_${m.state}`));
+            const extra = apiResults.filter(r => !seen.has(`${r.city}_${r.state}`));
+            suggestions = [...localMatches, ...extra].slice(0, 15);
+          } else {
+            suggestions = localMatches.slice(0, 15);
+          }
+        } catch (e) {
+          suggestions = localMatches.slice(0, 15);
+        }
+      }
+
+      if (suggestions.length === 0) {
+        dropdown.innerHTML = `
+          <div style="padding:12px 14px; font-size:0.8rem; color:#64748b; text-align:center;">
+            No locations found for "${query}". You can enter custom coordinates or city name.
+          </div>
+        `;
+        dropdown.style.display = 'block';
+        return;
+      }
+
+      dropdown.innerHTML = `
+        <div class="dropdown-header">
+          <span>SUGGESTED CITIES & HUBS (${region})</span>
+          <span>${suggestions.length} results</span>
+        </div>
+      `;
+
+      suggestions.forEach(s => {
+        const item = document.createElement('div');
+        item.className = 'dropdown-item';
+        item.innerHTML = `
+          <div class="item-left">
+            <div class="item-icon-box">📍</div>
+            <div>
+              <div class="item-city-name">${s.city}${s.state ? ', ' + s.state : ''}</div>
+              <div class="item-state-name">${s.country || 'USA'}</div>
+            </div>
+          </div>
+          <span class="item-country-badge">${s.country_code || 'US'}</span>
+        `;
+        item.onclick = () => {
+          input.value = s.label || `${s.city}, ${s.state || s.country}`;
+          updateClearBtn(inputId, inputId === 'start-input' ? 'start-clear-btn' : 'finish-clear-btn');
+          dropdown.style.display = 'none';
+          fetchRoute();
+        };
+        dropdown.appendChild(item);
+      });
+
+      dropdown.style.display = 'block';
+    }
+
+    // Close dropdowns on outside click
+    document.addEventListener('click', (e) => {
+      const sCont = document.getElementById('start-autocomplete-container');
+      const fCont = document.getElementById('finish-autocomplete-container');
+      if (!sCont.contains(e.target)) {
+        document.getElementById('start-dropdown').style.display = 'none';
+      }
+      if (!fCont.contains(e.target)) {
+        document.getElementById('finish-dropdown').style.display = 'none';
+      }
+    });
 
     async function fetchRoute() {
       const start = document.getElementById('start-input').value.trim();
@@ -909,6 +1415,7 @@
           return;
         }
 
+        currentData = data;
         renderMap(data);
         renderDashboard(data);
       } catch (err) {
@@ -923,42 +1430,60 @@
       const fuel = data.fuel_summary;
       const stops = data.fuel_stops;
 
-      // Card 1
+      const isMetric = (currentUnitSystem === 'metric');
+
+      // Metric conversions
+      const distVal = isMetric ? (route.distance_miles * KM_PER_MILE) : route.distance_miles;
+      const distUnit = isMetric ? 'km' : 'mi';
+
+      const consumedVol = isMetric ? (fuel.total_fuel_consumed_gallons * LITERS_PER_GALLON) : fuel.total_fuel_consumed_gallons;
+      const purchasedVol = isMetric ? (fuel.total_fuel_purchased_gallons * LITERS_PER_GALLON) : fuel.total_fuel_purchased_gallons;
+      const volUnit = isMetric ? 'L' : 'gal';
+
+      const avgPrice = isMetric ? (fuel.average_fuel_cost_per_gallon / LITERS_PER_GALLON) : fuel.average_fuel_cost_per_gallon;
+      const priceUnit = isMetric ? '$/L' : '$/gal';
+
+      // Card 1: Fuel Expense & Consumption
       document.getElementById('stat-total-cost').textContent = `$${fuel.total_money_spent_dollars.toFixed(2)}`;
-      document.getElementById('stat-consumed-gal').textContent = `${fuel.total_fuel_consumed_gallons.toFixed(1)} gal`;
-      document.getElementById('stat-purchased-gal').textContent = `${fuel.total_fuel_purchased_gallons.toFixed(1)} gal`;
-      document.getElementById('stat-avg-price').textContent = `$${fuel.average_fuel_cost_per_gallon.toFixed(3)}/gal`;
+      document.getElementById('stat-consumed-vol').textContent = `${consumedVol.toFixed(1)} ${volUnit}`;
+      document.getElementById('stat-purchased-vol').textContent = `${purchasedVol.toFixed(1)} ${volUnit}`;
+      document.getElementById('stat-avg-price').textContent = `$${avgPrice.toFixed(3)}${priceUnit}`;
       document.getElementById('stat-stops-tag').textContent = `${fuel.total_refueling_stops} Fuel Stops`;
 
-      renderTankBars(fuel, stops, route.distance_miles);
+      renderTankBars(fuel, stops, distVal, isMetric);
 
-      // Card 2
+      // Card 2: Stops Table
       document.getElementById('stat-stops-count-badge').textContent = `${fuel.total_refueling_stops} Stops`;
       const tbody = document.getElementById('stops-tbody');
       tbody.innerHTML = '';
 
       if (stops.length === 0) {
+        const directLimit = isMetric ? '805 km' : '500 mi';
         tbody.innerHTML = `
           <tr>
             <td colspan="3" style="text-align:center; padding:18px; color:#64748b;">
-              ✅ Direct trip: no fuel stops needed within initial 500 mi range.
+              ✅ Direct trip: no fuel stops needed within initial ${directLimit} range.
             </td>
           </tr>
         `;
       } else {
         stops.forEach((s) => {
+          const sDist = isMetric ? (s.distance_along_route_miles * KM_PER_MILE) : s.distance_along_route_miles;
+          const sPrice = isMetric ? (s.retail_price / LITERS_PER_GALLON) : s.retail_price;
+          const sPumped = isMetric ? (s.fuel_pumped_gallons * LITERS_PER_GALLON) : s.fuel_pumped_gallons;
+
           const tr = document.createElement('tr');
           tr.innerHTML = `
             <td>
               <div class="station-cell-name">#${s.stop_index} ${s.truckstop_name}</div>
-              <div class="station-cell-sub">${s.city}, ${s.state} • Mile ${s.distance_along_route_miles}</div>
+              <div class="station-cell-sub">${s.city}, ${s.state} • ${distUnit.toUpperCase()} ${sDist.toFixed(1)}</div>
             </td>
             <td>
               <span class="rate-pill">Best Rate</span>
             </td>
             <td style="text-align:right;">
-              <div style="font-weight:700; color:#0f172a;">$${s.retail_price.toFixed(3)}</div>
-              <div style="font-size:0.72rem; color:#2563eb; font-weight:700;">+${s.fuel_pumped_gallons.toFixed(1)} gal</div>
+              <div style="font-weight:700; color:#0f172a;">$${sPrice.toFixed(3)}${priceUnit}</div>
+              <div style="font-size:0.72rem; color:#2563eb; font-weight:700;">+${sPumped.toFixed(1)} ${volUnit}</div>
             </td>
           `;
           tr.onclick = () => selectStop(s);
@@ -966,8 +1491,8 @@
         });
       }
 
-      // Card 3
-      document.getElementById('stat-distance').textContent = `${route.distance_miles.toLocaleString()} mi`;
+      // Card 3: Route Details
+      document.getElementById('stat-distance').textContent = `${distVal.toLocaleString(undefined, { maximumFractionDigits: 1 })} ${distUnit}`;
       document.getElementById('stat-duration').textContent = route.duration_formatted;
       document.getElementById('stat-api-calls').textContent = `${data.execution_metrics.external_api_calls} call`;
       const computeMs = (data.execution_metrics.spatial_search_time_ms + data.execution_metrics.optimization_time_ms).toFixed(1);
@@ -985,32 +1510,40 @@
       } else {
         document.getElementById('detail-station-name').textContent = route.finish.label;
         document.getElementById('detail-price-text').textContent = "$0.00";
-        document.getElementById('detail-pumped-text').textContent = "0 gal";
-        document.getElementById('detail-mile-text').textContent = "0 mi";
+        document.getElementById('detail-pumped-text').textContent = `0 ${volUnit}`;
+        document.getElementById('detail-mile-text').textContent = `0 ${distUnit}`;
         document.getElementById('detail-cost-text').textContent = "$0.00";
         document.getElementById('detail-address-text').textContent = `Direct arrival without refueling stops.`;
       }
     }
 
-    function renderTankBars(fuel, stops, totalMiles) {
+    function renderTankBars(fuel, stops, totalDist, isMetric) {
       const track = document.getElementById('tank-sim-track');
       track.innerHTML = '';
 
       const numBars = 36;
-      const milesPerBar = totalMiles / numBars;
+      const distPerBar = totalDist / numBars;
 
-      let currentFuel = fuel.initial_fuel_gallons;
-      const capacity = fuel.tank_capacity_gallons;
-      const mpg = fuel.vehicle_mpg;
+      const capacity = isMetric ? (fuel.tank_capacity_gallons * LITERS_PER_GALLON) : fuel.tank_capacity_gallons;
+      let currentFuel = isMetric ? (fuel.initial_fuel_gallons * LITERS_PER_GALLON) : fuel.initial_fuel_gallons;
+      const distUnit = isMetric ? 'km' : 'mi';
+      const volUnit = isMetric ? 'L' : 'gal';
+
+      // Fuel burn rate per distance unit
+      const burnRate = isMetric ? (totalDist > 0 ? (fuel.total_fuel_consumed_gallons * LITERS_PER_GALLON) / totalDist : 0.08) : (1.0 / fuel.vehicle_mpg);
 
       for (let i = 0; i < numBars; i++) {
-        const barMile = i * milesPerBar;
-        const stopFound = stops.find(s => Math.abs(s.distance_along_route_miles - barMile) < milesPerBar);
+        const barDist = i * distPerBar;
+        const stopFound = stops.find(s => {
+          const sD = isMetric ? (s.distance_along_route_miles * KM_PER_MILE) : s.distance_along_route_miles;
+          return Math.abs(sD - barDist) < distPerBar;
+        });
 
         if (stopFound) {
-          currentFuel = Math.min(capacity, currentFuel + stopFound.fuel_pumped_gallons);
+          const pumped = isMetric ? (stopFound.fuel_pumped_gallons * LITERS_PER_GALLON) : stopFound.fuel_pumped_gallons;
+          currentFuel = Math.min(capacity, currentFuel + pumped);
         } else {
-          currentFuel = Math.max(2, currentFuel - (milesPerBar / mpg));
+          currentFuel = Math.max(capacity * 0.05, currentFuel - (distPerBar * burnRate));
         }
 
         const pct = Math.max(12, Math.min(100, Math.round((currentFuel / capacity) * 100)));
@@ -1020,12 +1553,12 @@
 
         if (stopFound) {
           col.classList.add('refueled');
-          col.title = `Mile ${barMile.toFixed(0)}: Stop #${stopFound.stop_index} (${stopFound.truckstop_name}) - Pumped ${stopFound.fuel_pumped_gallons.toFixed(1)} gal`;
+          col.title = `${distUnit.toUpperCase()} ${barDist.toFixed(0)}: Stop #${stopFound.stop_index} (${stopFound.truckstop_name})`;
         } else if (pct < 25) {
           col.classList.add('low');
-          col.title = `Mile ${barMile.toFixed(0)}: Fuel Low (${currentFuel.toFixed(1)} gal remaining)`;
+          col.title = `${distUnit.toUpperCase()} ${barDist.toFixed(0)}: Fuel Low (${currentFuel.toFixed(1)} ${volUnit} remaining)`;
         } else {
-          col.title = `Mile ${barMile.toFixed(0)}: ${currentFuel.toFixed(1)} gal (${pct}%)`;
+          col.title = `${distUnit.toUpperCase()} ${barDist.toFixed(0)}: ${currentFuel.toFixed(1)} ${volUnit} (${pct}%)`;
         }
 
         track.appendChild(col);
@@ -1036,10 +1569,20 @@
       const card = document.getElementById('station-detail-card');
       card.style.display = 'block';
 
+      const isMetric = (currentUnitSystem === 'metric');
+      const distUnit = isMetric ? 'km' : 'mi';
+      const volUnit = isMetric ? 'L' : 'gal';
+      const priceUnit = isMetric ? 'per liter' : 'per gallon';
+
+      const sDist = isMetric ? (s.distance_along_route_miles * KM_PER_MILE) : s.distance_along_route_miles;
+      const sPrice = isMetric ? (s.retail_price / LITERS_PER_GALLON) : s.retail_price;
+      const sPumped = isMetric ? (s.fuel_pumped_gallons * LITERS_PER_GALLON) : s.fuel_pumped_gallons;
+
       document.getElementById('detail-station-name').textContent = s.truckstop_name;
-      document.getElementById('detail-price-text').textContent = `$${s.retail_price.toFixed(3)}`;
-      document.getElementById('detail-pumped-text').textContent = `+${s.fuel_pumped_gallons.toFixed(1)} gal`;
-      document.getElementById('detail-mile-text').textContent = `Mile ${s.distance_along_route_miles}`;
+      document.getElementById('detail-price-text').textContent = `$${sPrice.toFixed(3)}`;
+      document.getElementById('detail-price-unit').textContent = priceUnit;
+      document.getElementById('detail-pumped-text').textContent = `+${sPumped.toFixed(1)} ${volUnit}`;
+      document.getElementById('detail-mile-text').textContent = `${distUnit.toUpperCase()} ${sDist.toFixed(1)}`;
       document.getElementById('detail-cost-text').textContent = `$${s.cost_dollars.toFixed(2)}`;
       document.getElementById('detail-address-text').textContent = `${s.address}, ${s.city}, ${s.state}`;
 
@@ -1121,6 +1664,10 @@
 
     window.onload = () => {
       initMap();
+      setupAutocomplete('start-input', 'start-dropdown', 'start-clear-btn');
+      setupAutocomplete('finish-input', 'finish-dropdown', 'finish-clear-btn');
+      updateClearBtn('start-input', 'start-clear-btn');
+      updateClearBtn('finish-input', 'finish-clear-btn');
       fetchRoute();
     };
   </script>

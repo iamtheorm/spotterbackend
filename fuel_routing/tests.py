@@ -106,6 +106,14 @@ class APITests(TestCase):
         self.assertEqual(data["status"], "healthy")
         self.assertGreater(data["indexed_stations"], 5000)
 
+    def test_location_search(self):
+        resp = self.client.get(reverse("api-location-search"), {"q": "Dallas", "country": "US"})
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        results = resp.json()
+        self.assertGreater(len(results), 0)
+        self.assertEqual(results[0]["city"], "Dallas")
+        self.assertEqual(results[0]["state"], "TX")
+
     def test_missing_params(self):
         resp = self.client.get(reverse("api-route"))
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)

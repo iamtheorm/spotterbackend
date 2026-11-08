@@ -252,6 +252,125 @@ class HealthView(APIView):
         })
 
 
+class LocationSearchAPIView(APIView):
+    """
+    Search US and international cities for autocomplete dropdowns.
+    Sub-millisecond in-memory lookup over 40,000+ US cities plus global hubs.
+    """
+    GLOBAL_HUBS = [
+        # Canada
+        {"city": "Toronto", "state": "ON", "country": "Canada", "country_code": "CA", "lat": 43.6532, "lon": -79.3832},
+        {"city": "Vancouver", "state": "BC", "country": "Canada", "country_code": "CA", "lat": 49.2827, "lon": -123.1207},
+        {"city": "Montreal", "state": "QC", "country": "Canada", "country_code": "CA", "lat": 45.5017, "lon": -73.5673},
+        {"city": "Calgary", "state": "AB", "country": "Canada", "country_code": "CA", "lat": 51.0447, "lon": -114.0719},
+        {"city": "Ottawa", "state": "ON", "country": "Canada", "country_code": "CA", "lat": 45.4215, "lon": -75.6972},
+        {"city": "Edmonton", "state": "AB", "country": "Canada", "country_code": "CA", "lat": 53.5461, "lon": -113.4938},
+        # Europe / UK
+        {"city": "London", "state": "England", "country": "United Kingdom", "country_code": "GB", "lat": 51.5074, "lon": -0.1278},
+        {"city": "Manchester", "state": "England", "country": "United Kingdom", "country_code": "GB", "lat": 53.4808, "lon": -2.2426},
+        {"city": "Birmingham", "state": "England", "country": "United Kingdom", "country_code": "GB", "lat": 52.4862, "lon": -1.8904},
+        {"city": "Frankfurt", "state": "Hessen", "country": "Germany", "country_code": "DE", "lat": 50.1109, "lon": 8.6821},
+        {"city": "Berlin", "state": "Berlin", "country": "Germany", "country_code": "DE", "lat": 52.5200, "lon": 13.4050},
+        {"city": "Munich", "state": "Bavaria", "country": "Germany", "country_code": "DE", "lat": 48.1351, "lon": 11.5820},
+        {"city": "Paris", "state": "Île-de-France", "country": "France", "country_code": "FR", "lat": 48.8566, "lon": 2.3522},
+        {"city": "Amsterdam", "state": "North Holland", "country": "Netherlands", "country_code": "NL", "lat": 52.3676, "lon": 4.9041},
+        # Asia / India
+        {"city": "Delhi", "state": "Delhi", "country": "India", "country_code": "IN", "lat": 28.6139, "lon": 77.2090},
+        {"city": "Mumbai", "state": "Maharashtra", "country": "India", "country_code": "IN", "lat": 19.0760, "lon": 72.8777},
+        {"city": "Bengaluru", "state": "Karnataka", "country": "India", "country_code": "IN", "lat": 12.9716, "lon": 77.5946},
+        {"city": "Hyderabad", "state": "Telangana", "country": "India", "country_code": "IN", "lat": 17.3850, "lon": 78.4867},
+        {"city": "Chennai", "state": "Tamil Nadu", "country": "India", "country_code": "IN", "lat": 13.0827, "lon": 80.2707},
+        {"city": "Kolkata", "state": "West Bengal", "country": "India", "country_code": "IN", "lat": 22.5726, "lon": 88.3639},
+        {"city": "Pune", "state": "Maharashtra", "country": "India", "country_code": "IN", "lat": 18.5204, "lon": 73.8567},
+        {"city": "Tokyo", "state": "Tokyo", "country": "Japan", "country_code": "JP", "lat": 35.6762, "lon": 139.6503},
+        {"city": "Singapore", "state": "Central", "country": "Singapore", "country_code": "SG", "lat": 1.3521, "lon": 103.8198},
+        {"city": "Dubai", "state": "Dubai", "country": "United Arab Emirates", "country_code": "AE", "lat": 25.2048, "lon": 55.2708},
+        # Australia
+        {"city": "Sydney", "state": "NSW", "country": "Australia", "country_code": "AU", "lat": -33.8688, "lon": 151.2093},
+        {"city": "Melbourne", "state": "VIC", "country": "Australia", "country_code": "AU", "lat": -37.8136, "lon": 144.9631},
+        {"city": "Brisbane", "state": "QLD", "country": "Australia", "country_code": "AU", "lat": -27.4698, "lon": 153.0251},
+        # Latin America
+        {"city": "Mexico City", "state": "CDMX", "country": "Mexico", "country_code": "MX", "lat": 19.4326, "lon": -99.1332},
+        {"city": "São Paulo", "state": "SP", "country": "Brazil", "country_code": "BR", "lat": -23.5505, "lon": -46.6333},
+        {"city": "Buenos Aires", "state": "CABA", "country": "Argentina", "country_code": "AR", "lat": -34.6037, "lon": -58.3816},
+    ]
+
+    def get(self, request, *args, **kwargs):
+        q = request.query_params.get("q", "").strip().lower()
+        country_filter = request.query_params.get("country", "ALL").strip().upper()
+        if not q or len(q) < 1:
+            return Response([])
+
+        clean_q = "".join(ch for ch in q if ch.isalnum() or ch in " ,-")
+        tokens = [t.strip() for t in clean_q.split(",") if t.strip()]
+        city_token = tokens[0] if tokens else clean_q
+        state_token = tokens[1].upper() if len(tokens) > 1 else ""
+
+        results = []
+        seen = set()
+
+        # 1. Search Global Hubs if not strictly US
+        if country_filter != "US":
+            for hub in self.GLOBAL_HUBS:
+                if country_filter not in ("ALL", "") and hub["country_code"] != country_filter:
+                    continue
+                hay = f"{hub['city']} {hub['state']} {hub['country']}".lower()
+                if all(tok.lower() in hay for tok in tokens):
+                    key = f"{hub['city']}_{hub['country_code']}"
+                    if key not in seen:
+                        seen.add(key)
+                        results.append({
+                            "city": hub["city"],
+                            "state": hub["state"],
+                            "country": hub["country"],
+                            "country_code": hub["country_code"],
+                            "label": f"{hub['city']}, {hub['state']}, {hub['country_code']}",
+                            "display_name": f"{hub['city']}, {hub['state']}, {hub['country']}",
+                            "lat": hub["lat"],
+                            "lon": hub["lon"],
+                        })
+
+        # 2. Search local 40,000+ US cities database
+        if country_filter in ("ALL", "US", ""):
+            from fuel_routing.services.geocoding import _get_local_cities
+            cities_db = _get_local_cities()
+            norm_target = "".join(ch for ch in city_token.lower() if ch.isalnum())
+
+            prefix_matches = []
+            contains_matches = []
+
+            for k, (lat, lon) in cities_db.items():
+                parts = k.split("_")
+                if len(parts) >= 2:
+                    city_key, st = parts[0], parts[1]
+                    if state_token and st != state_token:
+                        continue
+                    item = {
+                        "city": city_key.title(),
+                        "state": st,
+                        "country": "United States",
+                        "country_code": "US",
+                        "label": f"{city_key.title()}, {st}, USA",
+                        "display_name": f"{city_key.title()}, {st}, United States",
+                        "lat": lat,
+                        "lon": lon,
+                    }
+                    if city_key.startswith(norm_target):
+                        prefix_matches.append(item)
+                    elif norm_target in city_key:
+                        contains_matches.append(item)
+
+            for item in sorted(prefix_matches, key=lambda x: (len(x["city"]), x["city"])) + contains_matches:
+                key = f"{item['city']}_{item['state']}"
+                if key not in seen:
+                    seen.add(key)
+                    results.append(item)
+                    if len(results) >= 25:
+                        break
+
+        return Response(results[:25])
+
+
 def map_view(request):
     """
     Renders an interactive web interface powered by Leaflet.js
