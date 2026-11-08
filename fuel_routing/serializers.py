@@ -35,7 +35,12 @@ class RouteRequestSerializer(serializers.Serializer):
         required=False,
         default=500.0,
         min_value=0.0,
-        help_text="Starting fuel range available in the vehicle (default: 500.0 miles)"
+        help_text="Starting fuel range available in the vehicle in miles (default: 500.0 miles)"
+    )
+    initial_fuel_gallons = serializers.FloatField(
+        required=False,
+        min_value=0.0,
+        help_text="Starting fuel in tank at departure in gallons (e.g. 50.0 gal for full tank)"
     )
     fuel_policy = serializers.ChoiceField(
         choices=["standard", "replace_consumed"],

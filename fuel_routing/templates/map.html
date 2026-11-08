@@ -259,6 +259,52 @@
       transform: rotate(180deg);
     }
 
+    /* Starting Fuel in Tank Control */
+    .fuel-input-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8fafc;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 10px;
+      padding: 7px 12px;
+      font-size: 0.82rem;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .fuel-input-box:focus-within {
+      background: #ffffff;
+      border-color: var(--brand-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+    .fuel-input-label {
+      font-weight: 700;
+      color: #64748b;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+
+    .fuel-number-input {
+      width: 48px;
+      border: none;
+      background: transparent;
+      outline: none;
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #0f172a;
+      text-align: right;
+    }
+
+    .fuel-input-unit {
+      font-weight: 700;
+      color: #2563eb;
+      font-size: 0.78rem;
+    }
+
     .btn-optimize {
       background: var(--brand-dark);
       color: #ffffff;
@@ -965,6 +1011,13 @@
         <div id="finish-dropdown" class="autocomplete-dropdown"></div>
       </div>
 
+      <!-- Start Fuel in Tank Input -->
+      <div class="fuel-input-box" title="Initial fuel in tank at departure">
+        <span class="fuel-input-label">Start Fuel:</span>
+        <input type="number" id="initial-fuel-input" class="fuel-number-input" value="50" min="0" max="50" step="1" title="Initial fuel at departure" />
+        <span id="initial-fuel-unit-label" class="fuel-input-unit">gal</span>
+      </div>
+
       <!-- Action Button -->
       <button id="btn-optimize" class="btn-optimize" onclick="fetchRoute()">
         <span id="btn-opt-text">Optimize Route</span>
@@ -1135,6 +1188,11 @@
       <div class="telemetry-item">
         <span class="telemetry-item-lbl">Compute Latency:</span>
         <span id="stat-latency" class="telemetry-item-val">28.4 ms</span>
+      </div>
+
+      <div class="telemetry-item">
+        <span class="telemetry-item-lbl">Corridor Buffer:</span>
+        <span id="stat-corridor" class="telemetry-item-val">10.0 mi</span>
       </div>
 
       <div class="savings-highlight-box">
@@ -1332,18 +1390,29 @@
       const impBtn = document.getElementById('unit-imperial-btn');
       const metBtn = document.getElementById('unit-metric-btn');
 
+      const fuelInp = document.getElementById('initial-fuel-input');
+      const fuelLbl = document.getElementById('initial-fuel-unit-label');
+      let currentVal = parseFloat(fuelInp.value);
+      if (isNaN(currentVal)) currentVal = (unit === 'imperial') ? 50 : 189;
+
       if (unit === 'imperial') {
         impBtn.classList.add('active');
         metBtn.classList.remove('active');
         document.getElementById('card1-spec-badge').textContent = '10 MPG • 500 mi Range';
         document.getElementById('card3-unit-badge').textContent = 'US Standard';
         document.getElementById('table-head-price').textContent = 'Price & Volume';
+        fuelLbl.textContent = 'gal';
+        fuelInp.max = 50;
+        fuelInp.value = Math.max(0, Math.min(50, Math.round(currentVal / LITERS_PER_GALLON)));
       } else {
         metBtn.classList.add('active');
         impBtn.classList.remove('active');
         document.getElementById('card1-spec-badge').textContent = '4.25 km/L • 805 km Range';
         document.getElementById('card3-unit-badge').textContent = 'Metric System';
         document.getElementById('table-head-price').textContent = 'Price ($/L) & Vol (L)';
+        fuelLbl.textContent = 'L';
+        fuelInp.max = 189;
+        fuelInp.value = Math.max(0, Math.min(189, Math.round(currentVal * LITERS_PER_GALLON)));
       }
 
       if (currentData) {
@@ -1565,12 +1634,17 @@
       hideToast();
       setLoading(true);
 
+      const rawFuel = parseFloat(document.getElementById('initial-fuel-input').value);
+      const fuelVal = isNaN(rawFuel) ? 50 : rawFuel;
+      const initialGallons = (currentUnitSystem === 'metric') ? (fuelVal / LITERS_PER_GALLON) : fuelVal;
+
       const params = new URLSearchParams({
         start: start,
         finish: finish,
         mpg: 10,
         max_range: 500,
         buffer_miles: 10,
+        initial_fuel_gallons: Math.max(0, initialGallons).toFixed(2),
         fuel_policy: 'standard'
       });
 
@@ -1590,6 +1664,13 @@
         currentData = data;
         renderMap(data);
         renderDashboard(data);
+
+        // Notify user if corridor search was automatically widened
+        if (data.corridor && data.corridor.auto_expanded) {
+          showToast(data.corridor.notice || `Corridor automatically widened to ${data.corridor.buffer_miles} miles detour to bridge sparse rural stations.`, 'warning');
+        } else {
+          hideToast();
+        }
       } catch (err) {
         showToast(`Request failed: ${err.message}`, 'error');
       } finally {
@@ -1669,6 +1750,11 @@
       document.getElementById('stat-api-calls').textContent = `${data.execution_metrics.external_api_calls} call`;
       const computeMs = (data.execution_metrics.spatial_search_time_ms + data.execution_metrics.optimization_time_ms).toFixed(1);
       document.getElementById('stat-latency').textContent = `${computeMs} ms`;
+
+      if (data.corridor && document.getElementById('stat-corridor')) {
+        const corrBuf = isMetric ? (data.corridor.buffer_miles * KM_PER_MILE).toFixed(1) + ' km' : data.corridor.buffer_miles.toFixed(1) + ' mi';
+        document.getElementById('stat-corridor').textContent = data.corridor.auto_expanded ? `${corrBuf} (Expanded)` : corrBuf;
+      }
 
       // Benchmark savings vs $3.45 national average
       const benchmarkAvg = 3.45;

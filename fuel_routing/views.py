@@ -129,7 +129,10 @@ class RouteFuelAPIView(APIView):
         mpg = data.get("mpg", 10.0)
         max_range = data.get("max_range", 500.0)
         buffer_miles = data.get("buffer_miles", 10.0)
-        initial_fuel = data.get("initial_fuel_miles", 500.0)
+        if "initial_fuel_gallons" in data and data["initial_fuel_gallons"] is not None:
+            initial_fuel = float(data["initial_fuel_gallons"]) * mpg
+        else:
+            initial_fuel = float(data.get("initial_fuel_miles", 500.0))
         policy = data.get("fuel_policy", "standard")
         ensure_full_end = (policy == "replace_consumed")
 
@@ -182,6 +185,9 @@ class RouteFuelAPIView(APIView):
         )
         t_opt_ms = round((time.time() - t0_opt) * 1000, 2)
 
+        corridor_expanded = False
+        effective_buffer = buffer_miles
+
         if not opt.get("success") and buffer_miles < 25.0:
             # Adaptive corridor expansion: widen buffer to 25 miles for sparse rural routes
             cands_expanded = find_candidate_stations_along_route(
@@ -200,6 +206,8 @@ class RouteFuelAPIView(APIView):
             if opt_expanded.get("success"):
                 opt = opt_expanded
                 cands = cands_expanded
+                corridor_expanded = True
+                effective_buffer = 25.0
 
         if not opt.get("success"):
             return Response({
@@ -248,6 +256,12 @@ class RouteFuelAPIView(APIView):
                 "total_refueling_stops": opt["total_stops"]
             },
             "fuel_stops": opt["fuel_stops"],
+            "corridor": {
+                "buffer_miles": effective_buffer,
+                "auto_expanded": corridor_expanded,
+                "candidate_stations_count": len(cands),
+                "notice": f"Corridor automatically widened to {effective_buffer:.0f} miles detour to bridge sparse rural stations." if corridor_expanded else None
+            },
             "map_url": map_query_url,
             "geojson": geojson,
             "execution_metrics": {
