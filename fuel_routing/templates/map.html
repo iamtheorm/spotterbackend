@@ -993,7 +993,7 @@
       <div class="autocomplete-container" id="start-autocomplete-container">
         <div class="input-field-wrapper">
           <span class="input-pin-badge pin-start">A</span>
-          <input type="text" id="start-input" class="route-text-input" value="{{ start|default:'New York, NY' }}" placeholder="Search start city, state or transport hub..." autocomplete="off" />
+          <input type="text" id="start-input" class="route-text-input" value="{{ start }}" placeholder="Search start city, state or transport hub..." autocomplete="off" />
           <button type="button" id="start-clear-btn" class="input-clear-btn" onclick="clearInput('start-input')">&times;</button>
         </div>
         <div id="start-dropdown" class="autocomplete-dropdown"></div>
@@ -1010,7 +1010,7 @@
       <div class="autocomplete-container" id="finish-autocomplete-container">
         <div class="input-field-wrapper">
           <span class="input-pin-badge pin-finish">B</span>
-          <input type="text" id="finish-input" class="route-text-input" value="{{ finish|default:'Atlanta, GA' }}" placeholder="Search destination city, state or transport hub..." autocomplete="off" />
+          <input type="text" id="finish-input" class="route-text-input" value="{{ finish }}" placeholder="Search destination city, state or transport hub..." autocomplete="off" />
           <button type="button" id="finish-clear-btn" class="input-clear-btn" onclick="clearInput('finish-input')">&times;</button>
         </div>
         <div id="finish-dropdown" class="autocomplete-dropdown"></div>
@@ -1046,7 +1046,7 @@
     <div id="map"></div>
 
     <!-- Floating Detail Card for Selected Stop -->
-    <div id="station-detail-card" class="floating-station-card">
+    <div id="station-detail-card" class="floating-station-card" style="display:none;">
       <div class="card-top-arch">
         <button class="arch-close-btn" onclick="toggleDetailCard()" title="Close details">&times;</button>
       </div>
@@ -1054,10 +1054,10 @@
       <div class="station-header-row">
         <div>
           <div style="font-size:0.68rem; color:#64748b; font-weight:700; text-transform:uppercase;">Optimal Refueling Point</div>
-          <div id="detail-station-name" class="station-name-title">DOSWELL TRUCK STOP</div>
+          <div id="detail-station-name" class="station-name-title">--</div>
         </div>
         <div class="station-price-box">
-          <div id="detail-price-text" class="station-price-num">$2.899</div>
+          <div id="detail-price-text" class="station-price-num">--</div>
           <div id="detail-price-unit" class="station-price-lbl">per gallon</div>
         </div>
       </div>
@@ -1075,7 +1075,7 @@
           <span class="badge-stat-dot" style="background:var(--brand-blue);"></span>
           <div>
             <span class="badge-stat-lbl">Fuel Pumped</span>
-            <span id="detail-pumped-text" class="badge-stat-val">+33.1 gal</span>
+            <span id="detail-pumped-text" class="badge-stat-val">--</span>
           </div>
         </div>
 
@@ -1083,7 +1083,7 @@
           <span class="badge-stat-dot" style="background:var(--brand-amber);"></span>
           <div>
             <span class="badge-stat-lbl">Route Position</span>
-            <span id="detail-mile-text" class="badge-stat-val">Mile 311.3</span>
+            <span id="detail-mile-text" class="badge-stat-val">--</span>
           </div>
         </div>
 
@@ -1091,14 +1091,14 @@
           <span class="badge-stat-dot" style="background:#8b5cf6;"></span>
           <div>
             <span class="badge-stat-lbl">Stop Cost</span>
-            <span id="detail-cost-text" class="badge-stat-val">$9.99</span>
+            <span id="detail-cost-text" class="badge-stat-val">--</span>
           </div>
         </div>
       </div>
 
       <div class="station-address-box">
         <div style="font-size:0.68rem; color:#64748b; font-weight:700; margin-bottom:2px;">STATION ADDRESS</div>
-        <div id="detail-address-text" class="station-address-text">I-95, EXIT 98 & SR-30, Doswell, VA</div>
+        <div id="detail-address-text" class="station-address-text">--</div>
       </div>
     </div>
   </div>
@@ -1115,21 +1115,21 @@
 
       <div class="hero-expense-box">
         <div class="hero-expense-label">Total Fuel Money Spent</div>
-        <div id="stat-total-cost" class="hero-expense-val">$104.51</div>
+        <div id="stat-total-cost" class="hero-expense-val">$0.00</div>
       </div>
 
       <div class="metric-chips-row">
         <div class="metric-chip">
           <span class="chip-dot" style="background:var(--brand-amber);"></span>
-          <span>Consumed: <strong id="stat-consumed-vol">86.5 gal</strong></span>
+          <span>Consumed: <strong id="stat-consumed-vol">--</strong></span>
         </div>
         <div class="metric-chip">
           <span class="chip-dot" style="background:var(--brand-blue);"></span>
-          <span>Purchased: <strong id="stat-purchased-vol">36.5 gal</strong></span>
+          <span>Purchased: <strong id="stat-purchased-vol">--</strong></span>
         </div>
         <div class="metric-chip">
           <span class="chip-dot" style="background:var(--brand-green);"></span>
-          <span>Avg Rate: <strong id="stat-avg-price">$2.863/gal</strong></span>
+          <span>Avg Rate: <strong id="stat-avg-price">--</strong></span>
         </div>
       </div>
 
@@ -1137,7 +1137,7 @@
       <div class="tank-sim-box">
         <div class="tank-sim-header">
           <span>Fuel Tank Level Simulation (Trip Progress)</span>
-          <span id="stat-stops-tag">2 Fuel Stops</span>
+          <span id="stat-stops-tag">0 Fuel Stops</span>
         </div>
         <div id="tank-sim-track" class="tank-sim-bars">
           <!-- Dynamically populated bars -->
@@ -1149,7 +1149,7 @@
     <div class="analytics-card">
       <div class="analytics-card-title">
         <span>Optimal Refueling Stops</span>
-        <span id="stat-stops-count-badge" style="font-size:0.75rem; color:#64748b; font-weight:600;">2 Stops</span>
+        <span id="stat-stops-count-badge" style="font-size:0.75rem; color:#64748b; font-weight:600;">0 Stops</span>
       </div>
 
       <div class="stops-table-scroll">
@@ -1162,7 +1162,11 @@
             </tr>
           </thead>
           <tbody id="stops-tbody">
-            <!-- Dynamically populated rows -->
+            <tr>
+              <td colspan="3" style="text-align:center; padding:22px; color:#64748b; font-size:0.8rem; line-height:1.5;">
+                No route calculated. Choose a quick route or search cities above to optimize fuel stops.
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -1177,27 +1181,27 @@
 
       <div class="telemetry-item">
         <span class="telemetry-item-lbl">Driving Distance:</span>
-        <span id="stat-distance" class="telemetry-item-val">865.1 mi</span>
+        <span id="stat-distance" class="telemetry-item-val">--</span>
       </div>
 
       <div class="telemetry-item">
         <span class="telemetry-item-lbl">Estimated Duration:</span>
-        <span id="stat-duration" class="telemetry-item-val">17 hr 4 min</span>
+        <span id="stat-duration" class="telemetry-item-val">--</span>
       </div>
 
       <div class="telemetry-item">
         <span class="telemetry-item-lbl">Routing API Calls:</span>
-        <span id="stat-api-calls" class="telemetry-item-val">1 call</span>
+        <span id="stat-api-calls" class="telemetry-item-val">--</span>
       </div>
 
       <div class="telemetry-item">
         <span class="telemetry-item-lbl">Compute Latency:</span>
-        <span id="stat-latency" class="telemetry-item-val">28.4 ms</span>
+        <span id="stat-latency" class="telemetry-item-val">--</span>
       </div>
 
       <div class="telemetry-item">
         <span class="telemetry-item-lbl">Corridor Buffer:</span>
-        <span id="stat-corridor" class="telemetry-item-val">10.0 mi</span>
+        <span id="stat-corridor" class="telemetry-item-val">--</span>
       </div>
 
       <div class="savings-highlight-box">
@@ -1205,7 +1209,7 @@
           <div class="savings-title">Estimated Route Savings</div>
           <div style="font-size:0.72rem; color:#047857;">vs National Benchmark Price</div>
         </div>
-        <div id="stat-savings-amt" class="savings-amount">+$18.40</div>
+        <div id="stat-savings-amt" class="savings-amount">$0.00</div>
       </div>
     </div>
 
@@ -1979,7 +1983,14 @@
       setupAutocomplete('finish-input', 'finish-dropdown', 'finish-clear-btn');
       updateClearBtn('start-input', 'start-clear-btn');
       updateClearBtn('finish-input', 'finish-clear-btn');
-      fetchRoute();
+
+      const sVal = document.getElementById('start-input').value.trim();
+      const fVal = document.getElementById('finish-input').value.trim();
+      if (sVal && fVal) {
+        fetchRoute();
+      } else {
+        resetDashboardAndMap('Enter start and destination locations above and click Optimize Route.');
+      }
     };
   </script>
 </body>

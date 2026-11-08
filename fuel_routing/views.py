@@ -514,8 +514,8 @@ def map_view(request):
     """
     Renders an interactive web interface powered by Leaflet.js
     """
-    start_q = request.GET.get("start", "New York, NY")
-    finish_q = request.GET.get("finish", "Atlanta, GA")
+    start_q = request.GET.get("start", "").strip()
+    finish_q = request.GET.get("finish", "").strip()
     return render(request, "map.html", {
         "start": start_q,
         "finish": finish_q,
