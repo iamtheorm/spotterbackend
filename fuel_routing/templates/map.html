@@ -855,7 +855,7 @@
 
       <!-- Region Filter Dropdown -->
       <div class="region-select-box" title="Filter cities by Country or Continent">
-        <span>🌍</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#64748b; flex-shrink:0;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
         <select id="region-selector" onchange="onRegionChange()">
           <option value="US" selected>United States (All 50 States)</option>
           <option value="ALL">Global (All Continents)</option>
@@ -872,7 +872,7 @@
         <div class="input-field-wrapper">
           <span class="input-pin-badge pin-start">A</span>
           <input type="text" id="start-input" class="route-text-input" value="{{ start|default:'New York, NY' }}" placeholder="Search start city, state or transport hub..." autocomplete="off" />
-          <button type="button" id="start-clear-btn" class="input-clear-btn" onclick="clearInput('start-input')">✕</button>
+          <button type="button" id="start-clear-btn" class="input-clear-btn" onclick="clearInput('start-input')">&times;</button>
         </div>
         <div id="start-dropdown" class="autocomplete-dropdown"></div>
       </div>
@@ -889,7 +889,7 @@
         <div class="input-field-wrapper">
           <span class="input-pin-badge pin-finish">B</span>
           <input type="text" id="finish-input" class="route-text-input" value="{{ finish|default:'Atlanta, GA' }}" placeholder="Search destination city, state or transport hub..." autocomplete="off" />
-          <button type="button" id="finish-clear-btn" class="input-clear-btn" onclick="clearInput('finish-input')">✕</button>
+          <button type="button" id="finish-clear-btn" class="input-clear-btn" onclick="clearInput('finish-input')">&times;</button>
         </div>
         <div id="finish-dropdown" class="autocomplete-dropdown"></div>
       </div>
@@ -904,11 +904,11 @@
     <!-- Quick Presets -->
     <div class="presets-row">
       <span class="preset-label">Quick Routes:</span>
-      <button type="button" class="preset-chip-btn" onclick="setPreset('New York, NY', 'Los Angeles, CA')">NYC → LA (Coast-to-Coast)</button>
-      <button type="button" class="preset-chip-btn" onclick="setPreset('New York, NY', 'Atlanta, GA')">NYC → Atlanta</button>
-      <button type="button" class="preset-chip-btn" onclick="setPreset('Chicago, IL', 'Dallas, TX')">Chicago → Dallas</button>
-      <button type="button" class="preset-chip-btn" onclick="setPreset('Seattle, WA', 'Miami, FL')">Seattle → Miami</button>
-      <button type="button" class="preset-chip-btn" onclick="setPreset('Houston, TX', 'San Francisco, CA')">Houston → SF</button>
+      <button type="button" class="preset-chip-btn" onclick="setPreset('New York, NY', 'Los Angeles, CA')">NYC &rarr; LA (Coast-to-Coast)</button>
+      <button type="button" class="preset-chip-btn" onclick="setPreset('New York, NY', 'Atlanta, GA')">NYC &rarr; Atlanta</button>
+      <button type="button" class="preset-chip-btn" onclick="setPreset('Chicago, IL', 'Dallas, TX')">Chicago &rarr; Dallas</button>
+      <button type="button" class="preset-chip-btn" onclick="setPreset('Seattle, WA', 'Miami, FL')">Seattle &rarr; Miami</button>
+      <button type="button" class="preset-chip-btn" onclick="setPreset('Houston, TX', 'San Francisco, CA')">Houston &rarr; SF</button>
     </div>
   </section>
 
@@ -919,7 +919,7 @@
     <!-- Floating Detail Card for Selected Stop -->
     <div id="station-detail-card" class="floating-station-card">
       <div class="card-top-arch">
-        <button class="arch-close-btn" onclick="toggleDetailCard()" title="Close details">✕</button>
+        <button class="arch-close-btn" onclick="toggleDetailCard()" title="Close details">&times;</button>
       </div>
 
       <div class="station-header-row">
@@ -1145,10 +1145,78 @@
         { city: "Munich", state: "Bavaria", country: "Germany", country_code: "DE", lat: 48.1351, lon: 11.5820 },
       ],
       IN: [
+        { city: "Mumbai", state: "Maharashtra", country: "India", country_code: "IN", label: "Mumbai, Maharashtra, India", lat: 19.0760, lon: 72.8777 },
         { city: "Delhi", state: "Delhi", country: "India", country_code: "IN", label: "Delhi, India", lat: 28.6139, lon: 77.2090 },
-        { city: "Mumbai", state: "Maharashtra", country: "India", country_code: "IN", label: "Mumbai, India", lat: 19.0760, lon: 72.8777 },
-        { city: "Bengaluru", state: "Karnataka", country: "India", country_code: "IN", label: "Bengaluru, India", lat: 12.9716, lon: 77.5946 },
-        { city: "Hyderabad", state: "Telangana", country: "India", country_code: "IN", label: "Hyderabad, India", lat: 17.3850, lon: 78.4867 },
+        { city: "Bengaluru", state: "Karnataka", country: "India", country_code: "IN", label: "Bengaluru, Karnataka, India", lat: 12.9716, lon: 77.5946 },
+        { city: "Hyderabad", state: "Telangana", country: "India", country_code: "IN", label: "Hyderabad, Telangana, India", lat: 17.3850, lon: 78.4867 },
+        { city: "Ahmedabad", state: "Gujarat", country: "India", country_code: "IN", label: "Ahmedabad, Gujarat, India", lat: 23.0225, lon: 72.5714 },
+        { city: "Chennai", state: "Tamil Nadu", country: "India", country_code: "IN", label: "Chennai, Tamil Nadu, India", lat: 13.0827, lon: 80.2707 },
+        { city: "Kolkata", state: "West Bengal", country: "India", country_code: "IN", label: "Kolkata, West Bengal, India", lat: 22.5726, lon: 88.3639 },
+        { city: "Surat", state: "Gujarat", country: "India", country_code: "IN", label: "Surat, Gujarat, India", lat: 21.1702, lon: 72.8311 },
+        { city: "Pune", state: "Maharashtra", country: "India", country_code: "IN", label: "Pune, Maharashtra, India", lat: 18.5204, lon: 73.8567 },
+        { city: "Jaipur", state: "Rajasthan", country: "India", country_code: "IN", label: "Jaipur, Rajasthan, India", lat: 26.9124, lon: 75.7873 },
+        { city: "Lucknow", state: "Uttar Pradesh", country: "India", country_code: "IN", label: "Lucknow, Uttar Pradesh, India", lat: 26.8467, lon: 80.9462 },
+        { city: "Kanpur", state: "Uttar Pradesh", country: "India", country_code: "IN", label: "Kanpur, Uttar Pradesh, India", lat: 26.4499, lon: 80.3319 },
+        { city: "Nagpur", state: "Maharashtra", country: "India", country_code: "IN", label: "Nagpur, Maharashtra, India", lat: 21.1458, lon: 79.0882 },
+        { city: "Indore", state: "Madhya Pradesh", country: "India", country_code: "IN", label: "Indore, Madhya Pradesh, India", lat: 22.7196, lon: 75.8577 },
+        { city: "Thane", state: "Maharashtra", country: "India", country_code: "IN", label: "Thane, Maharashtra, India", lat: 19.2183, lon: 72.9781 },
+        { city: "Bhopal", state: "Madhya Pradesh", country: "India", country_code: "IN", label: "Bhopal, Madhya Pradesh, India", lat: 23.2599, lon: 77.4126 },
+        { city: "Visakhapatnam", state: "Andhra Pradesh", country: "India", country_code: "IN", label: "Visakhapatnam, Andhra Pradesh, India", lat: 17.6868, lon: 83.2185 },
+        { city: "Patna", state: "Bihar", country: "India", country_code: "IN", label: "Patna, Bihar, India", lat: 25.5941, lon: 85.1376 },
+        { city: "Vadodara", state: "Gujarat", country: "India", country_code: "IN", label: "Vadodara, Gujarat, India", lat: 22.3072, lon: 73.1812 },
+        { city: "Ghaziabad", state: "Uttar Pradesh", country: "India", country_code: "IN", label: "Ghaziabad, Uttar Pradesh, India", lat: 28.6692, lon: 77.4538 },
+        { city: "Ludhiana", state: "Punjab", country: "India", country_code: "IN", label: "Ludhiana, Punjab, India", lat: 30.9010, lon: 75.8573 },
+        { city: "Agra", state: "Uttar Pradesh", country: "India", country_code: "IN", label: "Agra, Uttar Pradesh, India", lat: 27.1767, lon: 78.0081 },
+        { city: "Nashik", state: "Maharashtra", country: "India", country_code: "IN", label: "Nashik, Maharashtra, India", lat: 19.9975, lon: 73.7898 },
+        { city: "Faridabad", state: "Haryana", country: "India", country_code: "IN", label: "Faridabad, Haryana, India", lat: 28.4089, lon: 77.3178 },
+        { city: "Meerut", state: "Uttar Pradesh", country: "India", country_code: "IN", label: "Meerut, Uttar Pradesh, India", lat: 28.9845, lon: 77.7064 },
+        { city: "Rajkot", state: "Gujarat", country: "India", country_code: "IN", label: "Rajkot, Gujarat, India", lat: 22.3039, lon: 70.8022 },
+        { city: "Varanasi", state: "Uttar Pradesh", country: "India", country_code: "IN", label: "Varanasi, Uttar Pradesh, India", lat: 25.3176, lon: 82.9739 },
+        { city: "Srinagar", state: "Jammu and Kashmir", country: "India", country_code: "IN", label: "Srinagar, Jammu & Kashmir, India", lat: 34.0837, lon: 74.7973 },
+        { city: "Aurangabad", state: "Maharashtra", country: "India", country_code: "IN", label: "Aurangabad, Maharashtra, India", lat: 19.8762, lon: 75.3433 },
+        { city: "Dhanbad", state: "Jharkhand", country: "India", country_code: "IN", label: "Dhanbad, Jharkhand, India", lat: 23.7957, lon: 86.4304 },
+        { city: "Amritsar", state: "Punjab", country: "India", country_code: "IN", label: "Amritsar, Punjab, India", lat: 31.6340, lon: 74.8723 },
+        { city: "Navi Mumbai", state: "Maharashtra", country: "India", country_code: "IN", label: "Navi Mumbai, Maharashtra, India", lat: 19.0330, lon: 73.0297 },
+        { city: "Allahabad", state: "Uttar Pradesh", country: "India", country_code: "IN", label: "Allahabad (Prayagraj), Uttar Pradesh, India", lat: 25.4358, lon: 81.8463 },
+        { city: "Ranchi", state: "Jharkhand", country: "India", country_code: "IN", label: "Ranchi, Jharkhand, India", lat: 23.3441, lon: 85.3096 },
+        { city: "Howrah", state: "West Bengal", country: "India", country_code: "IN", label: "Howrah, West Bengal, India", lat: 22.5958, lon: 88.2636 },
+        { city: "Coimbatore", state: "Tamil Nadu", country: "India", country_code: "IN", label: "Coimbatore, Tamil Nadu, India", lat: 11.0168, lon: 76.9558 },
+        { city: "Jabalpur", state: "Madhya Pradesh", country: "India", country_code: "IN", label: "Jabalpur, Madhya Pradesh, India", lat: 23.1815, lon: 79.9864 },
+        { city: "Gwalior", state: "Madhya Pradesh", country: "India", country_code: "IN", label: "Gwalior, Madhya Pradesh, India", lat: 26.2183, lon: 78.1828 },
+        { city: "Vijayawada", state: "Andhra Pradesh", country: "India", country_code: "IN", label: "Vijayawada, Andhra Pradesh, India", lat: 16.5062, lon: 80.6480 },
+        { city: "Jodhpur", state: "Rajasthan", country: "India", country_code: "IN", label: "Jodhpur, Rajasthan, India", lat: 26.2389, lon: 73.0243 },
+        { city: "Madurai", state: "Tamil Nadu", country: "India", country_code: "IN", label: "Madurai, Tamil Nadu, India", lat: 9.9252, lon: 78.1198 },
+        { city: "Raipur", state: "Chhattisgarh", country: "India", country_code: "IN", label: "Raipur, Chhattisgarh, India", lat: 21.2514, lon: 81.6296 },
+        { city: "Kota", state: "Rajasthan", country: "India", country_code: "IN", label: "Kota, Rajasthan, India", lat: 25.2138, lon: 75.8648 },
+        { city: "Guwahati", state: "Assam", country: "India", country_code: "IN", label: "Guwahati, Assam, India", lat: 26.1445, lon: 91.7362 },
+        { city: "Chandigarh", state: "Chandigarh", country: "India", country_code: "IN", label: "Chandigarh, India", lat: 30.7333, lon: 76.7794 },
+        { city: "Solapur", state: "Maharashtra", country: "India", country_code: "IN", label: "Solapur, Maharashtra, India", lat: 17.6599, lon: 75.9064 },
+        { city: "Hubli", state: "Karnataka", country: "India", country_code: "IN", label: "Hubli, Karnataka, India", lat: 15.3647, lon: 75.1240 },
+        { city: "Mysore", state: "Karnataka", country: "India", country_code: "IN", label: "Mysore, Karnataka, India", lat: 12.2958, lon: 76.6394 },
+        { city: "Gurugram", state: "Haryana", country: "India", country_code: "IN", label: "Gurugram, Haryana, India", lat: 28.4595, lon: 77.0266 },
+        { city: "Noida", state: "Uttar Pradesh", country: "India", country_code: "IN", label: "Noida, Uttar Pradesh, India", lat: 28.5355, lon: 77.3910 },
+        { city: "Aligarh", state: "Uttar Pradesh", country: "India", country_code: "IN", label: "Aligarh, Uttar Pradesh, India", lat: 27.8974, lon: 78.0880 },
+        { city: "Jalandhar", state: "Punjab", country: "India", country_code: "IN", label: "Jalandhar, Punjab, India", lat: 31.3260, lon: 75.5762 },
+        { city: "Bhubaneswar", state: "Odisha", country: "India", country_code: "IN", label: "Bhubaneswar, Odisha, India", lat: 20.2961, lon: 85.8245 },
+        { city: "Salem", state: "Tamil Nadu", country: "India", country_code: "IN", label: "Salem, Tamil Nadu, India", lat: 11.6643, lon: 78.1460 },
+        { city: "Warangal", state: "Telangana", country: "India", country_code: "IN", label: "Warangal, Telangana, India", lat: 17.9689, lon: 79.5941 },
+        { city: "Thiruvananthapuram", state: "Kerala", country: "India", country_code: "IN", label: "Thiruvananthapuram, Kerala, India", lat: 8.5241, lon: 76.9366 },
+        { city: "Kochi", state: "Kerala", country: "India", country_code: "IN", label: "Kochi, Kerala, India", lat: 9.9312, lon: 76.2673 },
+        { city: "Kozhikode", state: "Kerala", country: "India", country_code: "IN", label: "Kozhikode, Kerala, India", lat: 11.2588, lon: 75.7804 },
+        { city: "Dehradun", state: "Uttarakhand", country: "India", country_code: "IN", label: "Dehradun, Uttarakhand, India", lat: 30.3165, lon: 78.0322 },
+        { city: "Shimla", state: "Himachal Pradesh", country: "India", country_code: "IN", label: "Shimla, Himachal Pradesh, India", lat: 31.1048, lon: 77.1734 },
+        { city: "Haridwar", state: "Uttarakhand", country: "India", country_code: "IN", label: "Haridwar, Uttarakhand, India", lat: 29.9457, lon: 78.1642 },
+        { city: "Jammu", state: "Jammu and Kashmir", country: "India", country_code: "IN", label: "Jammu, Jammu & Kashmir, India", lat: 32.7266, lon: 74.8570 },
+        { city: "Panaji", state: "Goa", country: "India", country_code: "IN", label: "Panaji, Goa, India", lat: 15.4909, lon: 73.8278 },
+        { city: "Puducherry", state: "Puducherry", country: "India", country_code: "IN", label: "Puducherry, India", lat: 11.9416, lon: 79.8083 },
+        { city: "Agartala", state: "Tripura", country: "India", country_code: "IN", label: "Agartala, Tripura, India", lat: 23.8315, lon: 91.2868 },
+        { city: "Shillong", state: "Meghalaya", country: "India", country_code: "IN", label: "Shillong, Meghalaya, India", lat: 25.5788, lon: 91.8933 },
+        { city: "Imphal", state: "Manipur", country: "India", country_code: "IN", label: "Imphal, Manipur, India", lat: 24.8170, lon: 93.9368 },
+        { city: "Kohima", state: "Nagaland", country: "India", country_code: "IN", label: "Kohima, Nagaland, India", lat: 25.6751, lon: 94.1086 },
+        { city: "Aizawl", state: "Mizoram", country: "India", country_code: "IN", label: "Aizawl, Mizoram, India", lat: 23.7271, lon: 92.7176 },
+        { city: "Itanagar", state: "Arunachal Pradesh", country: "India", country_code: "IN", label: "Itanagar, Arunachal Pradesh, India", lat: 27.0844, lon: 93.6053 },
+        { city: "Gangtok", state: "Sikkim", country: "India", country_code: "IN", label: "Gangtok, Sikkim, India", lat: 27.3389, lon: 88.6065 },
+        { city: "Leh", state: "Ladakh", country: "India", country_code: "IN", label: "Leh, Ladakh, India", lat: 34.1526, lon: 77.5771 },
       ],
       AU: [
         { city: "Sydney", state: "NSW", country: "Australia", country_code: "AU", label: "Sydney, NSW, Australia", lat: -33.8688, lon: 151.2093 },
@@ -1350,7 +1418,9 @@
         item.className = 'dropdown-item';
         item.innerHTML = `
           <div class="item-left">
-            <div class="item-icon-box">📍</div>
+            <div class="item-icon-box">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            </div>
             <div>
               <div class="item-city-name">${s.city}${s.state ? ', ' + s.state : ''}</div>
               <div class="item-state-name">${s.country || 'USA'}</div>
@@ -1462,7 +1532,7 @@
         tbody.innerHTML = `
           <tr>
             <td colspan="3" style="text-align:center; padding:18px; color:#64748b;">
-              ✅ Direct trip: no fuel stops needed within initial ${directLimit} range.
+              Direct trip: no fuel stops needed within initial ${directLimit} range.
             </td>
           </tr>
         `;

@@ -27,7 +27,7 @@ class Command(BaseCommand):
         max_range = options["range"]
         buffer_miles = options["buffer"]
 
-        self.stdout.write(self.style.MIGRATE_HEADING(f"\n⛽ Calculating Optimal Route: {start_q} -> {finish_q}\n"))
+        self.stdout.write(self.style.MIGRATE_HEADING(f"\nCalculating Optimal Route: {start_q} -> {finish_q}\n"))
 
         # 1. Geocode
         try:
