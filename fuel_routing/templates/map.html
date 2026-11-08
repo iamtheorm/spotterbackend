@@ -420,7 +420,7 @@
     #map {
       width: 100%;
       height: 100%;
-      background: #e5e7eb;
+      background: #c8e4f4;
     }
 
     /* Floating Station Detail Card (Matches reference design) */
@@ -1297,9 +1297,18 @@
     };
 
     function initMap() {
-      // Focus on USA
+      // Focus on USA with constrained zoom and bounds to prevent repeating world ribbons
+      const southWest = L.latLng(-85, -180);
+      const northEast = L.latLng(85, 180);
+      const worldBounds = L.latLngBounds(southWest, northEast);
+
       map = L.map('map', {
         zoomControl: false,
+        minZoom: 3,
+        maxZoom: 18,
+        maxBounds: worldBounds,
+        maxBoundsViscosity: 1.0,
+        worldCopyJump: true
       }).setView([39.8283, -98.5795], 5);
 
       L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -1307,7 +1316,9 @@
       // Clean Esri World Street Map Tiles (fast, CDN, unrestricted)
       L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
         attribution: 'Tiles &copy; Esri &mdash; USGS, NOAA',
-        maxZoom: 19
+        minZoom: 3,
+        maxZoom: 18,
+        bounds: worldBounds
       }).addTo(map);
 
       markersLayer = L.layerGroup().addTo(map);
@@ -1805,12 +1816,12 @@
         }
       }).addTo(map);
 
-      // Fit map tightly to route bounds with comfortable padding
+      // Fit map tightly to route bounds with comfortable padding and max zoom limit
       const b = data.route.bounds;
       map.fitBounds([
         [b[0], b[1]],
         [b[2], b[3]]
-      ], { padding: [50, 50] });
+      ], { padding: [50, 50], maxZoom: 14 });
     }
 
     function setLoading(isLoading) {
