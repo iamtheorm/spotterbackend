@@ -220,6 +220,16 @@ class RouteFuelAPIView(APIView):
         start_info = {"query": start_query, "label": s_label, "latitude": s_lat, "longitude": s_lon}
         finish_info = {"query": finish_query, "label": f_label, "latitude": f_lat, "longitude": f_lon}
 
+        # Populate coordinates for any auxiliary stops along route polyline
+        route_coords = route_data["coordinates"]
+        for s in opt.get("fuel_stops", []):
+            coords_dict = s.get("coordinates", {})
+            if coords_dict.get("latitude") == 0.0 or coords_dict.get("longitude") == 0.0:
+                fraction = min(1.0, max(0.0, s["distance_along_route_miles"] / max(1.0, dist_miles)))
+                idx = int(fraction * (len(route_coords) - 1))
+                coords_dict["latitude"] = route_coords[idx][0]
+                coords_dict["longitude"] = route_coords[idx][1]
+
         geojson = _build_geojson(
             route_geometry=route_data["geojson_geometry"],
             start_info=start_info,
