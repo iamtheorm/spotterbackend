@@ -2,12 +2,15 @@
 Views for Fuel Routing API and interactive Map UI.
 """
 import time
+import logging
 from typing import Any, Dict, List
 import urllib.parse
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+logger = logging.getLogger(__name__)
 
 from fuel_routing.serializers import RouteRequestSerializer
 from fuel_routing.services.geocoding import geocode_location
@@ -329,6 +332,36 @@ class LocationSearchAPIView(APIView):
                             "lat": hub["lat"],
                             "lon": hub["lon"],
                         })
+
+            # Also query Open-Meteo for worldwide coverage if results < 5
+            if len(results) < 5 and len(city_token) >= 2:
+                try:
+                    om_url = f"https://geocoding-api.open-meteo.com/v1/search?name={urllib.parse.quote(city_token)}&count=10&format=json"
+                    om_req = urllib.request.Request(om_url, headers={"User-Agent": "SpotterFuelRouting/1.0"})
+                    with urllib.request.urlopen(om_req, timeout=3.0) as om_resp:
+                        om_data = json.load(om_resp)
+                        for item in om_data.get("results", []):
+                            cc = (item.get("country_code") or "").upper()
+                            if country_filter not in ("ALL", "") and cc != country_filter:
+                                continue
+                            c_name = item.get("name", "")
+                            st_name = item.get("admin1", "")
+                            country_name = item.get("country", "")
+                            key = f"{c_name}_{cc}"
+                            if key not in seen:
+                                seen.add(key)
+                                results.append({
+                                    "city": c_name,
+                                    "state": st_name,
+                                    "country": country_name,
+                                    "country_code": cc,
+                                    "label": f"{c_name}, {st_name}, {cc}" if st_name else f"{c_name}, {country_name}",
+                                    "display_name": f"{c_name}, {st_name}, {country_name}",
+                                    "lat": item.get("latitude"),
+                                    "lon": item.get("longitude"),
+                                })
+                except Exception as e:
+                    logger.debug("Open-Meteo geocoding fallback error: %s", e)
 
         # 2. Search local 40,000+ US cities database
         if country_filter in ("ALL", "US", ""):
