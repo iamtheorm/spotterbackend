@@ -182,6 +182,25 @@ class RouteFuelAPIView(APIView):
         )
         t_opt_ms = round((time.time() - t0_opt) * 1000, 2)
 
+        if not opt.get("success") and buffer_miles < 25.0:
+            # Adaptive corridor expansion: widen buffer to 25 miles for sparse rural routes
+            cands_expanded = find_candidate_stations_along_route(
+                route_coords=route_data["coordinates"],
+                total_distance_miles=dist_miles,
+                buffer_miles=25.0
+            )
+            opt_expanded = optimize_fuel_stops(
+                total_distance_miles=dist_miles,
+                candidate_stations=cands_expanded,
+                max_range_miles=max_range,
+                mpg=mpg,
+                initial_fuel_miles=initial_fuel,
+                ensure_end_full=ensure_full_end
+            )
+            if opt_expanded.get("success"):
+                opt = opt_expanded
+                cands = cands_expanded
+
         if not opt.get("success"):
             return Response({
                 "status": "error",

@@ -818,6 +818,64 @@
       display: inline-block;
     }
 
+    /* Toast Notification Banner */
+    .toast-banner {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 18px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      color: #991b1b;
+      margin-bottom: 12px;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.08);
+      font-size: 0.82rem;
+      font-weight: 500;
+      animation: fadeIn 0.2s ease-out;
+    }
+
+    .toast-banner.toast-warning {
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #92400e;
+    }
+
+    .toast-banner.toast-success {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #065f46;
+    }
+
+    .toast-content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      line-height: 1.4;
+      flex: 1;
+    }
+
+    .toast-close-btn {
+      background: none;
+      border: none;
+      color: inherit;
+      opacity: 0.7;
+      cursor: pointer;
+      font-size: 1.2rem;
+      line-height: 1;
+      padding: 0 4px;
+    }
+
+    .toast-close-btn:hover {
+      opacity: 1;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
@@ -851,6 +909,19 @@
 
   <!-- Clean Route Input Control Bar with Autocomplete & Region Filter -->
   <section class="route-control-bar">
+    <!-- Notification / Error Toast Banner -->
+    <div id="toast-banner" class="toast-banner" style="display:none;">
+      <div class="toast-content">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span id="toast-message"></span>
+      </div>
+      <button type="button" class="toast-close-btn" onclick="hideToast()" title="Dismiss">&times;</button>
+    </div>
+
     <div class="route-inputs-row">
 
       <!-- Region Filter Dropdown -->
@@ -908,7 +979,7 @@
       <button type="button" class="preset-chip-btn" onclick="setPreset('New York, NY', 'Atlanta, GA')">NYC &rarr; Atlanta</button>
       <button type="button" class="preset-chip-btn" onclick="setPreset('Chicago, IL', 'Dallas, TX')">Chicago &rarr; Dallas</button>
       <button type="button" class="preset-chip-btn" onclick="setPreset('Seattle, WA', 'Miami, FL')">Seattle &rarr; Miami</button>
-      <button type="button" class="preset-chip-btn" onclick="setPreset('Houston, TX', 'San Francisco, CA')">Houston &rarr; SF</button>
+      <button type="button" class="preset-chip-btn" onclick="setPreset('Houston, TX', 'Los Angeles, CA')">Houston &rarr; LA</button>
     </div>
   </section>
 
@@ -1326,6 +1397,25 @@
       document.getElementById('finish-dropdown').style.display = 'none';
     }
 
+    function showToast(message, type = 'error') {
+      const banner = document.getElementById('toast-banner');
+      const msg = document.getElementById('toast-message');
+      if (banner && msg) {
+        msg.textContent = message;
+        banner.className = `toast-banner toast-${type}`;
+        banner.style.display = 'flex';
+        clearTimeout(window._toastTimer);
+        window._toastTimer = setTimeout(() => {
+          hideToast();
+        }, 9000);
+      }
+    }
+
+    function hideToast() {
+      const banner = document.getElementById('toast-banner');
+      if (banner) banner.style.display = 'none';
+    }
+
     // Autocomplete Logic (Curated Hubs + Fast Local 40,000+ US/World Search)
     function setupAutocomplete(inputId, dropdownId, clearBtnId) {
       const input = document.getElementById(inputId);
@@ -1457,10 +1547,11 @@
       const finish = document.getElementById('finish-input').value.trim();
 
       if (!start || !finish) {
-        alert('Please provide both Start and Finish locations.');
+        showToast('Please provide both Start and Finish locations.', 'warning');
         return;
       }
 
+      hideToast();
       setLoading(true);
 
       const params = new URLSearchParams({
@@ -1480,7 +1571,7 @@
         const data = await resp.json();
 
         if (!resp.ok || data.status === 'error') {
-          alert(data.message || 'Error calculating route.');
+          showToast(data.message || 'Error calculating route.', 'error');
           setLoading(false);
           return;
         }
@@ -1489,7 +1580,7 @@
         renderMap(data);
         renderDashboard(data);
       } catch (err) {
-        alert(`Request failed: ${err.message}`);
+        showToast(`Request failed: ${err.message}`, 'error');
       } finally {
         setLoading(false);
       }

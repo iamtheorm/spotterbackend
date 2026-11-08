@@ -95,10 +95,21 @@ def optimize_fuel_stops(
 
     # Check maximum gap between consecutive points to ensure feasibility
     checkpoints = [0.0] + list(miles) + [total_distance_miles]
-    max_gap = max(checkpoints[i] - checkpoints[i-1] for i in range(1, len(checkpoints)))
+    max_gap = 0.0
+    gap_start = 0.0
+    gap_end = 0.0
+    for i in range(1, len(checkpoints)):
+        gap = checkpoints[i] - checkpoints[i-1]
+        if gap > max_gap:
+            max_gap = gap
+            gap_start = checkpoints[i-1]
+            gap_end = checkpoints[i]
+
     if max_gap > max_range_miles:
-        logger.warning("Gap between stations (%.1f mi) exceeds max range (%.1f mi)", max_gap, max_range_miles)
-        # Note: LP will report infeasible if unreachable
+        logger.warning(
+            "Gap between stations (%.1f mi from %.1f to %.1f) exceeds max range (%.1f mi)",
+            max_gap, gap_start, gap_end, max_range_miles
+        )
 
     # Formulate Linear Program:
     # Variables x_0 ... x_{N-1}: gallons of fuel purchased at station i
@@ -151,9 +162,19 @@ def optimize_fuel_stops(
     res = linprog(c=prices, A_ub=A_ub, b_ub=b_ub, bounds=bounds, method="highs")
 
     if not res.success:
+        if max_gap > max_range_miles:
+            if gap_end >= total_distance_miles:
+                err_detail = f"A {max_gap:.1f}-mile gap exists between the last available station (mile {gap_start:.1f}) and destination (mile {total_distance_miles:.1f}), exceeding the {max_range_miles:.0f}-mile vehicle range. No OPIS truckstops are indexed in this area of the dataset."
+            elif gap_start <= 0.0:
+                err_detail = f"A {max_gap:.1f}-mile gap exists from departure to the first station (mile {gap_end:.1f}), exceeding the {max_range_miles:.0f}-mile vehicle range."
+            else:
+                err_detail = f"A {max_gap:.1f}-mile gap exists between stations (mile {gap_start:.1f} to {gap_end:.1f}), exceeding the {max_range_miles:.0f}-mile vehicle range."
+        else:
+            err_detail = f"Gaps between available stations may exceed the {max_range_miles} mile vehicle range."
+
         return {
             "success": False,
-            "error": f"Refueling optimization could not find a feasible path. Gaps between available stations may exceed the {max_range_miles} mile vehicle range."
+            "error": f"Refueling optimization could not find a feasible path: {err_detail}"
         }
 
     bought_gallons = res.x
