@@ -1496,6 +1496,51 @@
       if (banner) banner.style.display = 'none';
     }
 
+    function resetDashboardAndMap(msg) {
+      currentData = null;
+      if (routeLayer) {
+        map.removeLayer(routeLayer);
+        routeLayer = null;
+      }
+      if (markersLayer) {
+        markersLayer.clearLayers();
+      }
+      const stationCard = document.getElementById('station-detail-card');
+      if (stationCard) stationCard.style.display = 'none';
+
+      // Reset Card 1: Fuel Expense & Consumption
+      document.getElementById('stat-total-cost').textContent = '$0.00';
+      document.getElementById('stat-consumed-vol').textContent = '--';
+      document.getElementById('stat-purchased-vol').textContent = '--';
+      document.getElementById('stat-avg-price').textContent = '--';
+      document.getElementById('stat-stops-tag').textContent = '0 Fuel Stops';
+      const track = document.getElementById('tank-sim-track');
+      if (track) track.innerHTML = '';
+
+      // Reset Card 2: Stops Table
+      document.getElementById('stat-stops-count-badge').textContent = '0 Stops';
+      const tbody = document.getElementById('stops-tbody');
+      if (tbody) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="3" style="text-align:center; padding:22px; color:#64748b; font-size:0.8rem; line-height:1.5;">
+              ${msg || 'No route data available. Select valid locations to compute fuel stops.'}
+            </td>
+          </tr>
+        `;
+      }
+
+      // Reset Card 3: Route Details
+      document.getElementById('stat-distance').textContent = '--';
+      document.getElementById('stat-duration').textContent = '--';
+      document.getElementById('stat-api-calls').textContent = '0 calls';
+      document.getElementById('stat-latency').textContent = '--';
+      if (document.getElementById('stat-corridor')) {
+        document.getElementById('stat-corridor').textContent = '--';
+      }
+      document.getElementById('stat-savings-amt').textContent = '$0.00';
+    }
+
     // Autocomplete Logic (Curated Hubs + Fast Local 40,000+ US/World Search)
     function setupAutocomplete(inputId, dropdownId, clearBtnId) {
       const input = document.getElementById(inputId);
@@ -1656,7 +1701,9 @@
         const data = await resp.json();
 
         if (!resp.ok || data.status === 'error') {
-          showToast(data.message || 'Error calculating route.', 'error');
+          const errMsg = data.message || 'Error calculating route.';
+          resetDashboardAndMap(errMsg);
+          showToast(errMsg, 'error');
           setLoading(false);
           return;
         }
@@ -1672,6 +1719,7 @@
           hideToast();
         }
       } catch (err) {
+        resetDashboardAndMap(`Request failed: ${err.message}`);
         showToast(`Request failed: ${err.message}`, 'error');
       } finally {
         setLoading(false);
